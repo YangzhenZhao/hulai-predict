@@ -59,6 +59,7 @@ var contryDataMap = map[string]countryData{
 			{Date: newDate(2023, 8, 4), FirstHero: "张春华", SecondHero: "张辽"},
 			{Date: newDate(2023, 9, 1), FirstHero: "司马懿", SecondHero: "夏侯惇"},
 			{Date: newDate(2023, 9, 29), FirstHero: "曹仁", SecondHero: "曹丕"},
+			{Date: newDate(2023, 10, 27), FirstHero: "郭嘉", SecondHero: "蔡文姬"},
 		},
 		AngeHistory: []angeHeros{
 			{Date: newDate(2023, 2, 3), FirstHero: "张辽", SecondHero: "蔡文姬"},
@@ -87,6 +88,7 @@ var contryDataMap = map[string]countryData{
 			{Date: newDate(2023, 8, 4), FirstHero: "徐庶", SecondHero: "马岱"},
 			{Date: newDate(2023, 9, 1), FirstHero: "庞统", SecondHero: "关羽"},
 			{Date: newDate(2023, 9, 29), FirstHero: "赵云", SecondHero: "张飞"},
+			{Date: newDate(2023, 10, 27), FirstHero: "诸葛亮", SecondHero: "徐庶"},
 		},
 		AngeHistory: []angeHeros{
 			{Date: newDate(2023, 2, 3), FirstHero: "赵云", SecondHero: "诸葛亮"},
@@ -115,6 +117,7 @@ var contryDataMap = map[string]countryData{
 			{Date: newDate(2023, 8, 4), FirstHero: "孙尚香", SecondHero: "孙坚"},
 			{Date: newDate(2023, 9, 1), FirstHero: "大乔", SecondHero: "小乔"},
 			{Date: newDate(2023, 9, 29), FirstHero: "周瑜", SecondHero: "黄盖"},
+			{Date: newDate(2023, 10, 27), FirstHero: "孙策", SecondHero: "陆逊"},
 		},
 		AngeHistory: []angeHeros{
 			{Date: newDate(2023, 2, 3), FirstHero: "孙权", SecondHero: "大乔"},
@@ -143,6 +146,7 @@ var contryDataMap = map[string]countryData{
 			{Date: newDate(2023, 8, 4), FirstHero: "董卓", SecondHero: "吕布"},
 			{Date: newDate(2023, 9, 1), FirstHero: "SP华佗", SecondHero: "李儒"},
 			{Date: newDate(2023, 9, 29), FirstHero: "于吉", SecondHero: "祝融"},
+			{Date: newDate(2023, 10, 27), FirstHero: "貂蝉", SecondHero: "左慈"},
 		},
 		AngeHistory: []angeHeros{
 			{Date: newDate(2023, 2, 3), FirstHero: "吕布", SecondHero: "左慈"},
