@@ -11,11 +11,11 @@ import (
 
 func genGaochouList(country string) []guaranteedHeros {
 	knownData := contryDataMap[country]
-	predictHeros := genPredictGaochouList(knownData)
+	predictHeros := genPredictGaochouList(country, knownData)
 	return combineGaochouGuaranteed(knownData.GaochouHistory, predictHeros)
 }
 
-func genPredictGaochouList(data countryData) []gaochouPredictHeros {
+func genPredictGaochouList(country string, data countryData) []gaochouPredictHeros {
 	var predictRes []gaochouPredictHeros
 	currentDate := data.GaochouHistory[len(data.GaochouHistory)-1].Date
 	var historyHeroList []HeroList
@@ -27,7 +27,7 @@ func genPredictGaochouList(data countryData) []gaochouPredictHeros {
 	}
 	for i := 0; i < 6; i++ {
 		currentDate = currentDate.Add(4 * 7 * 24 * time.Hour)
-		firstHero, secondHero := predictNextHeros(data.Heros, data.Zhugong, historyHeroList)
+		firstHero, secondHero := predictNextHeros(data.Heros, zhugongMap[country], historyHeroList)
 		predictRes = append(predictRes, gaochouPredictHeros{
 			FirstHero:  firstHero,
 			SecondHero: secondHero,

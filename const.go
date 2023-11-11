@@ -44,9 +44,15 @@ func newDate(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 0, 0, 0, 0, location)
 }
 
+var zhugongMap = map[string]string{
+	"wei": "曹操",
+	"shu": "刘备",
+	"wu":  "孙权",
+	"qun": "袁绍",
+}
+
 var contryDataMap = map[string]countryData{
 	"wei": {
-		Zhugong:             "曹操",
 		LastAngeZhugongDate: newDate(2023, 5, 26),
 		Heros:               []string{"曹丕", "张春华", "蔡文姬", "曹仁", "司马懿", "夏侯惇", "张辽", "郭嘉"},
 		GaochouHistory: []gaochouHeros{
@@ -75,7 +81,6 @@ var contryDataMap = map[string]countryData{
 		},
 	},
 	"shu": {
-		Zhugong:             "刘备",
 		LastAngeZhugongDate: newDate(2023, 3, 31),
 		Heros:               []string{"徐庶", "马岱", "庞统", "诸葛亮", "张飞", "赵云", "关羽"},
 		GaochouHistory: []gaochouHeros{
@@ -104,7 +109,6 @@ var contryDataMap = map[string]countryData{
 		},
 	},
 	"wu": {
-		Zhugong:             "孙权",
 		LastAngeZhugongDate: newDate(2023, 9, 15),
 		Heros:               []string{"孙尚香", "陆逊", "大乔", "孙坚", "黄盖", "周瑜", "孙策", "小乔"},
 		GaochouHistory: []gaochouHeros{
@@ -133,7 +137,6 @@ var contryDataMap = map[string]countryData{
 		},
 	},
 	"qun": {
-		Zhugong:             "袁绍",
 		LastAngeZhugongDate: newDate(2023, 7, 21),
 		Heros:               []string{"于吉", "SP华佗", "左慈", "董卓", "李儒", "貂蝉", "祝融", "吕布"},
 		GaochouHistory: []gaochouHeros{

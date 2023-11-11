@@ -10,11 +10,11 @@ import (
 
 func genAngeList(country string) []guaranteedHeros {
 	knownData := contryDataMap[country]
-	predictHeros := genPredictAngeList(knownData)
+	predictHeros := genPredictAngeList(country, knownData)
 	return combineAngeGuaranteed(knownData.AngeHistory, predictHeros)
 }
 
-func genPredictAngeList(data countryData) []angePredictHeros {
+func genPredictAngeList(country string, data countryData) []angePredictHeros {
 	var predictRes []angePredictHeros
 	currentDate := data.AngeHistory[len(data.AngeHistory)-1].Date
 	nextAngeZhugongDate := data.LastAngeZhugongDate.Add(8 * 4 * 7 * 24 * time.Hour)
@@ -31,10 +31,10 @@ func genPredictAngeList(data countryData) []angePredictHeros {
 		var firstHero string
 		var secondHero string
 		if currentDate.Equal(nextAngeZhugongDate) {
-			firstHero = data.Zhugong
-			secondHero = predictNextSingleHero(data.Heros, data.Zhugong, historyHeroList)
+			firstHero = zhugongMap[country]
+			secondHero = predictNextSingleHero(data.Heros, zhugongMap[country], historyHeroList)
 		} else {
-			firstHero, secondHero = predictNextHeros(data.Heros, data.Zhugong, historyHeroList)
+			firstHero, secondHero = predictNextHeros(data.Heros, zhugongMap[country], historyHeroList)
 		}
 		predictRes = append(predictRes, angePredictHeros{
 			FirstHero:  firstHero,
