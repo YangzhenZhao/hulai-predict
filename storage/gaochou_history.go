@@ -51,7 +51,7 @@ func AppendNewGaochouHisotryRecord(req dto.AppendNewGaochouHisotryRecordReq) {
 }
 
 func gaochouCSVAppendRecord(req dto.AppendNewGaochouHisotryRecordReq) {
-	csvFile, _ := os.OpenFile(gaochouFilePath, os.O_RDWR, os.ModePerm)
+	csvFile, _ := os.OpenFile(gaochouFilePath, os.O_APPEND|os.O_RDWR, os.ModeAppend)
 	w := csv.NewWriter(csvFile)
 	record := []string{
 		strconv.Itoa(req.Date.Year()),
