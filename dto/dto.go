@@ -17,3 +17,11 @@ type AngeHeros struct {
 type CountryData struct {
 	AngeHistory []AngeHeros
 }
+
+type AppendNewGaochouHisotryRecordReq struct {
+	Date    time.Time
+	WeiList []string
+	ShuList []string
+	WuList  []string
+	QunList []string
+}

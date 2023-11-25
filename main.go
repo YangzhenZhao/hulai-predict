@@ -14,9 +14,9 @@ func main() {
 
 	router := gin.Default()
 
-	res := generateRes()
-	dumpsRes, _ := json.Marshal(res)
 	router.GET("/", func(c *gin.Context) {
+		res := generateRes()
+		dumpsRes, _ := json.Marshal(res)
 		c.JSON(200, string(dumpsRes))
 	})
 
