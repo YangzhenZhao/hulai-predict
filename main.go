@@ -19,6 +19,7 @@ func main() {
 		dumpsRes, _ := json.Marshal(res)
 		c.JSON(200, string(dumpsRes))
 	})
+	router.POST("/upload-gaochou", uploadGaochou)
 
 	router.Use(TlsHandler(8000))
 	router.RunTLS(":8000", "./public.pem", "./private.key")

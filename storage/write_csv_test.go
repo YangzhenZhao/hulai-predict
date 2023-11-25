@@ -1,6 +1,13 @@
 package storage
 
 import (
+	"encoding/csv"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+	"testing"
+
 	"github.com/YangzhenZhao/hulai-predict/dto"
 )
 
@@ -55,31 +62,31 @@ var writeGaoChouHistoryMap = map[string][]dto.GaochouHeros{
 	},
 }
 
-// func Test_writeGaochouCSV(t *testing.T) {
-// 	filePath := "/home/ubuntu/hulai-predict/storage/gaochou_history.csv"
-// 	csvFile, _ := os.OpenFile(filePath, os.O_RDWR, os.ModePerm)
-// 	w := csv.NewWriter(csvFile)
-// 	w.Write([]string{"year", "month", "day", "wei", "shu", "wu", "qun"})
-// 	for idx, item := range writeGaoChouHistoryMap["wei"] {
-// 		year := item.Date.Year()
-// 		month := item.Date.Month()
-// 		day := item.Date.Day()
-// 		shu := []string{writeGaoChouHistoryMap["shu"][idx].FirstHero, writeGaoChouHistoryMap["shu"][idx].SecondHero}
-// 		wu := []string{writeGaoChouHistoryMap["wu"][idx].FirstHero, writeGaoChouHistoryMap["wu"][idx].SecondHero}
-// 		qun := []string{writeGaoChouHistoryMap["qun"][idx].FirstHero, writeGaoChouHistoryMap["qun"][idx].SecondHero}
-// 		record := []string{
-// 			strconv.Itoa(year),
-// 			strconv.Itoa(int(month)),
-// 			strconv.Itoa(int(day)),
-// 			strings.Join([]string{item.FirstHero, item.SecondHero}, " "),
-// 			strings.Join(shu, " "),
-// 			strings.Join(wu, " "),
-// 			strings.Join(qun, " "),
-// 		}
-// 		w.Write(record)
-// 	}
-// 	w.Flush()
-// 	if err := w.Error(); err != nil {
-// 		fmt.Printf("err:%v", err)
-// 	}
-// }
+func Test_writeGaochouCSV(t *testing.T) {
+	filePath := "/home/ubuntu/hulai-predict/storage/csv_files/gaochou_history.csv"
+	csvFile, _ := os.OpenFile(filePath, os.O_RDWR, os.ModePerm)
+	w := csv.NewWriter(csvFile)
+	w.Write([]string{"year", "month", "day", "wei", "shu", "wu", "qun"})
+	for idx, item := range writeGaoChouHistoryMap["wei"] {
+		year := item.Date.Year()
+		month := item.Date.Month()
+		day := item.Date.Day()
+		shu := []string{writeGaoChouHistoryMap["shu"][idx].FirstHero, writeGaoChouHistoryMap["shu"][idx].SecondHero}
+		wu := []string{writeGaoChouHistoryMap["wu"][idx].FirstHero, writeGaoChouHistoryMap["wu"][idx].SecondHero}
+		qun := []string{writeGaoChouHistoryMap["qun"][idx].FirstHero, writeGaoChouHistoryMap["qun"][idx].SecondHero}
+		record := []string{
+			strconv.Itoa(year),
+			strconv.Itoa(int(month)),
+			strconv.Itoa(int(day)),
+			strings.Join([]string{item.FirstHero, item.SecondHero}, " "),
+			strings.Join(shu, " "),
+			strings.Join(wu, " "),
+			strings.Join(qun, " "),
+		}
+		w.Write(record)
+	}
+	w.Flush()
+	if err := w.Error(); err != nil {
+		fmt.Printf("err:%v", err)
+	}
+}

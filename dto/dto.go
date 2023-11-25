@@ -25,3 +25,8 @@ type AppendNewGaochouHisotryRecordReq struct {
 	WuList  []string
 	QunList []string
 }
+
+type UploadGaoChouReq struct {
+	Password string
+	Content  string
+}
