@@ -5,22 +5,25 @@ import (
 	"strings"
 	"time"
 
+	"github.com/YangzhenZhao/hulai-predict/dto"
+	"github.com/YangzhenZhao/hulai-predict/storage"
 	"github.com/davecgh/go-spew/spew"
 )
 
 func genAngeList(country string) []guaranteedHeros {
-	knownData := contryDataMap[country]
-	predictHeros := genPredictAngeList(country, knownData)
-	return combineAngeGuaranteed(knownData.AngeHistory, predictHeros)
+	history := storage.AngeHistoryMap[country]
+	predictHeros := genPredictAngeList(country, history)
+	return combineAngeGuaranteed(history, predictHeros)
 }
 
-func genPredictAngeList(country string, data countryData) []angePredictHeros {
+func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHeros {
+	countryHeros := countryHerosMap[country]
 	var predictRes []angePredictHeros
-	currentDate := data.AngeHistory[len(data.AngeHistory)-1].Date
-	nextAngeZhugongDate := data.LastAngeZhugongDate.Add(8 * 4 * 7 * 24 * time.Hour)
+	currentDate := history[len(history)-1].Date
+	nextAngeZhugongDate := lastAngeZhugongDateMap[country].Add(8 * 4 * 7 * 24 * time.Hour)
 	log.Printf("nextAngeZhugongDate: %s", nextAngeZhugongDate.String())
 	var historyHeroList []HeroList
-	for _, item := range data.AngeHistory {
+	for _, item := range history {
 		historyHeroList = append(historyHeroList, HeroList{
 			FirstHero:  item.FirstHero,
 			SecondHero: item.SecondHero,
@@ -32,9 +35,9 @@ func genPredictAngeList(country string, data countryData) []angePredictHeros {
 		var secondHero string
 		if currentDate.Equal(nextAngeZhugongDate) {
 			firstHero = zhugongMap[country]
-			secondHero = predictNextSingleHero(data.Heros, zhugongMap[country], historyHeroList)
+			secondHero = predictNextSingleHero(countryHeros, zhugongMap[country], historyHeroList)
 		} else {
-			firstHero, secondHero = predictNextHeros(data.Heros, zhugongMap[country], historyHeroList)
+			firstHero, secondHero = predictNextHeros(countryHeros, zhugongMap[country], historyHeroList)
 		}
 		predictRes = append(predictRes, angePredictHeros{
 			FirstHero:  firstHero,
@@ -65,7 +68,7 @@ func predictNextSingleHero(countryHeros []string, zhugong string, historyHeroLis
 	return predictFirst
 }
 
-func combineAngeGuaranteed(history []angeHeros, predict []angePredictHeros) []guaranteedHeros {
+func combineAngeGuaranteed(history []dto.AngeHeros, predict []angePredictHeros) []guaranteedHeros {
 	var res []guaranteedHeros
 	for i := len(predict) - 1; i >= 0; i-- {
 		res = append(res, guaranteedHeros{

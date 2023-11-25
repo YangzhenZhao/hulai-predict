@@ -6,20 +6,23 @@ import (
 	"strings"
 	"time"
 
+	"github.com/YangzhenZhao/hulai-predict/dto"
+	"github.com/YangzhenZhao/hulai-predict/storage"
 	"github.com/davecgh/go-spew/spew"
 )
 
 func genGaochouList(country string) []guaranteedHeros {
-	knownData := contryDataMap[country]
-	predictHeros := genPredictGaochouList(country, knownData)
-	return combineGaochouGuaranteed(knownData.GaochouHistory, predictHeros)
+	gaochouHistory := storage.GaoChouHistoryMap[country]
+	predictHeros := genPredictGaochouList(country, gaochouHistory)
+	return combineGaochouGuaranteed(gaochouHistory, predictHeros)
 }
 
-func genPredictGaochouList(country string, data countryData) []gaochouPredictHeros {
+func genPredictGaochouList(country string, history []dto.GaochouHeros) []gaochouPredictHeros {
+	countryHeros := countryHerosMap[country]
 	var predictRes []gaochouPredictHeros
-	currentDate := data.GaochouHistory[len(data.GaochouHistory)-1].Date
+	currentDate := history[len(history)-1].Date
 	var historyHeroList []HeroList
-	for _, item := range data.GaochouHistory {
+	for _, item := range history {
 		historyHeroList = append(historyHeroList, HeroList{
 			FirstHero:  item.FirstHero,
 			SecondHero: item.SecondHero,
@@ -27,7 +30,7 @@ func genPredictGaochouList(country string, data countryData) []gaochouPredictHer
 	}
 	for i := 0; i < 6; i++ {
 		currentDate = currentDate.Add(4 * 7 * 24 * time.Hour)
-		firstHero, secondHero := predictNextHeros(data.Heros, zhugongMap[country], historyHeroList)
+		firstHero, secondHero := predictNextHeros(countryHeros, zhugongMap[country], historyHeroList)
 		predictRes = append(predictRes, gaochouPredictHeros{
 			FirstHero:  firstHero,
 			SecondHero: secondHero,
@@ -119,7 +122,7 @@ func predictNextHerosByTwoRound(countryHerosLen int, zhugong string, historyHero
 	return metricList[0].Hero, metricList[1].Hero
 }
 
-func combineGaochouGuaranteed(history []gaochouHeros, predict []gaochouPredictHeros) []guaranteedHeros {
+func combineGaochouGuaranteed(history []dto.GaochouHeros, predict []gaochouPredictHeros) []guaranteedHeros {
 	var res []guaranteedHeros
 	for i := len(predict) - 1; i >= 0; i-- {
 		res = append(res, guaranteedHeros{
