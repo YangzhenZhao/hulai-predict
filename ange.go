@@ -11,7 +11,7 @@ import (
 )
 
 func genAngeList(country string) []guaranteedHeros {
-	history := storage.AngeHistoryMap[country]
+	history := storage.GetAngeHistory(country)
 	predictHeros := genPredictAngeList(country, history)
 	return combineAngeGuaranteed(history, predictHeros)
 }

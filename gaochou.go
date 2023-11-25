@@ -12,7 +12,7 @@ import (
 )
 
 func genGaochouList(country string) []guaranteedHeros {
-	gaochouHistory := storage.GaoChouHistoryMap[country]
+	gaochouHistory := storage.GetGaochouHistory(country)
 	predictHeros := genPredictGaochouList(country, gaochouHistory)
 	return combineGaochouGuaranteed(gaochouHistory, predictHeros)
 }

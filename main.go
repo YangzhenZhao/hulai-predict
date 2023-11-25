@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/YangzhenZhao/hulai-predict/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/unrolled/secure"
 )
 
 func main() {
+	storage.InitData()
+
 	router := gin.Default()
 
 	res := generateRes()
