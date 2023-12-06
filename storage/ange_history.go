@@ -1,6 +1,11 @@
 package storage
 
 import (
+	"encoding/csv"
+	"os"
+	"strconv"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/YangzhenZhao/hulai-predict/dto"
@@ -11,65 +16,94 @@ func newDate(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 0, 0, 0, 0, location)
 }
 
+var angeHistoryKey = "angeHistory"
+var angeHistoryCacheMap sync.Map
+var angeFilePath = "/home/ubuntu/hulai-predict/storage/csv_files/ange_history.csv"
+
 func GetAngeHistory(country string) []dto.AngeHeros {
-	return angeHistoryMap[country]
+	return getAllAngeHistory()[country]
+}
+
+func getAllAngeHistory() map[string][]dto.AngeHeros {
+	cache, _ := angeHistoryCacheMap.Load(angeHistoryKey)
+	return cache.(map[string][]dto.AngeHeros)
+}
+
+func AppendNewAngeHisotryRecord(req dto.AppendNewAngeHisotryRecordReq) {
+	allHistory := getAllAngeHistory()
+	allHistory["wei"] = append(allHistory["wei"], dto.AngeHeros{
+		Date:       req.Date,
+		FirstHero:  req.WeiList[0],
+		SecondHero: req.WeiList[1],
+	})
+	allHistory["shu"] = append(allHistory["shu"], dto.AngeHeros{
+		Date:       req.Date,
+		FirstHero:  req.ShuList[0],
+		SecondHero: req.ShuList[1],
+	})
+	allHistory["wu"] = append(allHistory["wu"], dto.AngeHeros{
+		Date:       req.Date,
+		FirstHero:  req.WuList[0],
+		SecondHero: req.WuList[1],
+	})
+	allHistory["qun"] = append(allHistory["qun"], dto.AngeHeros{
+		Date:       req.Date,
+		FirstHero:  req.QunList[0],
+		SecondHero: req.QunList[1],
+	})
+	angeHistoryCacheMap.Store(angeHistoryKey, allHistory)
+	angeCSVAppendRecord(req)
+}
+
+func angeCSVAppendRecord(req dto.AppendNewAngeHisotryRecordReq) {
+	csvFile, _ := os.OpenFile(angeFilePath, os.O_APPEND|os.O_RDWR, os.ModeAppend)
+	w := csv.NewWriter(csvFile)
+	record := []string{
+		strconv.Itoa(req.Date.Year()),
+		strconv.Itoa(int(req.Date.Month())),
+		strconv.Itoa(req.Date.Day()),
+		strings.Join(req.WeiList, " "),
+		strings.Join(req.ShuList, " "),
+		strings.Join(req.WuList, " "),
+		strings.Join(req.QunList, " "),
+	}
+	w.Write(record)
+	w.Flush()
 }
 
 var angeHistoryMap map[string][]dto.AngeHeros
 
 func initAngeHistoryMap() {
 	angeHistoryMap = map[string][]dto.AngeHeros{
-		"wei": []dto.AngeHeros{
-			{Date: newDate(2023, 2, 3), FirstHero: "张辽", SecondHero: "蔡文姬"},
-			{Date: newDate(2023, 3, 3), FirstHero: "司马懿", SecondHero: "曹仁"},
-			{Date: newDate(2023, 3, 31), FirstHero: "夏侯惇", SecondHero: "郭嘉"},
-			{Date: newDate(2023, 4, 28), FirstHero: "曹丕", SecondHero: "张春华"},
-			{Date: newDate(2023, 5, 26), FirstHero: "曹操", SecondHero: "张辽"},
-			{Date: newDate(2023, 6, 23), FirstHero: "司马懿", SecondHero: "蔡文姬"},
-			{Date: newDate(2023, 7, 21), FirstHero: "曹仁", SecondHero: "夏侯惇"},
-			{Date: newDate(2023, 8, 18), FirstHero: "曹丕", SecondHero: "郭嘉"},
-			{Date: newDate(2023, 9, 15), FirstHero: "张春华", SecondHero: "张辽"},
-			{Date: newDate(2023, 10, 13), FirstHero: "蔡文姬", SecondHero: "夏侯惇"},
-			{Date: newDate(2023, 11, 10), FirstHero: "曹丕", SecondHero: "司马懿"},
-		},
-		"shu": {
-			{Date: newDate(2023, 2, 3), FirstHero: "赵云", SecondHero: "诸葛亮"},
-			{Date: newDate(2023, 3, 3), FirstHero: "徐庶", SecondHero: "马岱"},
-			{Date: newDate(2023, 3, 31), FirstHero: "刘备", SecondHero: "关羽"},
-			{Date: newDate(2023, 4, 28), FirstHero: "庞统", SecondHero: "张飞"},
-			{Date: newDate(2023, 5, 26), FirstHero: "诸葛亮", SecondHero: "赵云"},
-			{Date: newDate(2023, 6, 23), FirstHero: "马岱", SecondHero: "徐庶"},
-			{Date: newDate(2023, 7, 21), FirstHero: "关羽", SecondHero: "庞统"},
-			{Date: newDate(2023, 8, 18), FirstHero: "张飞", SecondHero: "赵云"},
-			{Date: newDate(2023, 9, 15), FirstHero: "诸葛亮", SecondHero: "马岱"},
-			{Date: newDate(2023, 10, 13), FirstHero: "关羽", SecondHero: "徐庶"},
-			{Date: newDate(2023, 11, 10), FirstHero: "刘备", SecondHero: "庞统"},
-		},
-		"wu": {
-			{Date: newDate(2023, 2, 3), FirstHero: "孙权", SecondHero: "大乔"},
-			{Date: newDate(2023, 3, 3), FirstHero: "孙尚香", SecondHero: "小乔"},
-			{Date: newDate(2023, 3, 31), FirstHero: "孙坚", SecondHero: "周瑜"},
-			{Date: newDate(2023, 4, 28), FirstHero: "孙策", SecondHero: "陆逊"},
-			{Date: newDate(2023, 5, 26), FirstHero: "黄盖", SecondHero: "大乔"},
-			{Date: newDate(2023, 6, 23), FirstHero: "孙坚", SecondHero: "孙尚香"},
-			{Date: newDate(2023, 7, 21), FirstHero: "小乔", SecondHero: "黄盖"},
-			{Date: newDate(2023, 8, 18), FirstHero: "孙策", SecondHero: "周瑜"},
-			{Date: newDate(2023, 9, 15), FirstHero: "孙权", SecondHero: "陆逊"},
-			{Date: newDate(2023, 10, 13), FirstHero: "孙尚香", SecondHero: "大乔"},
-			{Date: newDate(2023, 11, 10), FirstHero: "孙坚", SecondHero: "小乔"},
-		},
-		"qun": {
-			{Date: newDate(2023, 2, 3), FirstHero: "吕布", SecondHero: "左慈"},
-			{Date: newDate(2023, 3, 3), FirstHero: "貂蝉", SecondHero: "李儒"},
-			{Date: newDate(2023, 3, 31), FirstHero: "董卓", SecondHero: "于吉"},
-			{Date: newDate(2023, 4, 28), FirstHero: "左慈", SecondHero: "祝融"},
-			{Date: newDate(2023, 5, 26), FirstHero: "吕布", SecondHero: "貂蝉"},
-			{Date: newDate(2023, 6, 23), FirstHero: "于吉", SecondHero: "董卓"},
-			{Date: newDate(2023, 7, 21), FirstHero: "袁绍", SecondHero: "李儒"},
-			{Date: newDate(2023, 8, 18), FirstHero: "左慈", SecondHero: "祝融"},
-			{Date: newDate(2023, 9, 15), FirstHero: "SP华佗", SecondHero: "董卓"},
-			{Date: newDate(2023, 10, 13), FirstHero: "貂蝉", SecondHero: "于吉"},
-			{Date: newDate(2023, 11, 10), FirstHero: "吕布", SecondHero: "sp华佗"},
-		},
+		"wei": {},
+		"shu": {},
+		"wu":  {},
+		"qun": {},
 	}
+	csvFile, _ := os.OpenFile(angeFilePath, os.O_RDWR, os.ModePerm)
+	r := csv.NewReader(csvFile)
+	records, _ := r.ReadAll()
+	for _, record := range records[1:] {
+		year, _ := strconv.ParseInt(record[0], 10, 32)
+		month, _ := strconv.ParseInt(record[1], 10, 32)
+		day, _ := strconv.ParseInt(record[2], 10, 32)
+		date := newDate(int(year), time.Month(month), int(day))
+		weiHeroList := strings.Split(record[3], " ")
+		shuHeroList := strings.Split(record[4], " ")
+		wuHeroList := strings.Split(record[5], " ")
+		qunHeroList := strings.Split(record[6], " ")
+		angeHistoryMap["wei"] = append(angeHistoryMap["wei"], dto.AngeHeros{
+			Date: date, FirstHero: weiHeroList[0], SecondHero: weiHeroList[1],
+		})
+		angeHistoryMap["shu"] = append(angeHistoryMap["shu"], dto.AngeHeros{
+			Date: date, FirstHero: shuHeroList[0], SecondHero: shuHeroList[1],
+		})
+		angeHistoryMap["wu"] = append(angeHistoryMap["wu"], dto.AngeHeros{
+			Date: date, FirstHero: wuHeroList[0], SecondHero: wuHeroList[1],
+		})
+		angeHistoryMap["qun"] = append(angeHistoryMap["qun"], dto.AngeHeros{
+			Date: date, FirstHero: qunHeroList[0], SecondHero: qunHeroList[1],
+		})
+	}
+	angeHistoryCacheMap.Store(angeHistoryKey, angeHistoryMap)
 }

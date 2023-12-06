@@ -55,6 +55,36 @@ func uploadGaochou(c *gin.Context) {
 	c.JSON(200, "")
 }
 
+func uploadAnge(c *gin.Context) {
+	req := &dto.UploadAngeReq{}
+	unmarshalRequest(c, req)
+	if req.Password != tmpPassword {
+		c.JSON(400, "密码错误")
+		return
+	}
+	weiHisoty := storage.GetAngeHistory("wei")
+	lastDate := weiHisoty[len(weiHisoty)-1].Date
+	newDate := lastDate.Add(4 * 7 * 24 * time.Hour)
+	content := formatContent(req.Content)
+
+	weiList := getCountryHerosByContent(content, "wei")
+	shuList := getCountryHerosByContent(content, "shu")
+	wuList := getCountryHerosByContent(content, "wu")
+	qunList := getCountryHerosByContent(content, "qun")
+	if len(weiList) != 2 || len(shuList) != 2 || len(wuList) != 2 || len(qunList) != 2 {
+		c.JSON(400, "解析失败!")
+		return
+	}
+	storage.AppendNewAngeHisotryRecord(dto.AppendNewAngeHisotryRecordReq{
+		Date:    newDate,
+		WeiList: weiList,
+		ShuList: shuList,
+		WuList:  wuList,
+		QunList: qunList,
+	})
+	c.JSON(200, "")
+}
+
 func formatContent(content string) string {
 	return strings.Join(strings.Split(content, " "), "")
 }

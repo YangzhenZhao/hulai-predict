@@ -26,7 +26,20 @@ type AppendNewGaochouHisotryRecordReq struct {
 	QunList []string
 }
 
+type AppendNewAngeHisotryRecordReq struct {
+	Date    time.Time
+	WeiList []string
+	ShuList []string
+	WuList  []string
+	QunList []string
+}
+
 type UploadGaoChouReq struct {
+	Password string
+	Content  string
+}
+
+type UploadAngeReq struct {
 	Password string
 	Content  string
 }
