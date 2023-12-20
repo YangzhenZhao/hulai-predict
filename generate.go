@@ -18,13 +18,16 @@ func genSingleCountryRes(country string) []guaranteedHeros {
 	return res
 }
 
-func notContainHeros(wholeHeros, partHeros []string) []string {
+func notContainHeros(wholeHeros, partHeros []string, excludeHero string) []string {
 	partHeroMap := map[string]struct{}{}
 	for _, hero := range partHeros {
 		partHeroMap[hero] = struct{}{}
 	}
 	var resHeros []string
 	for _, hero := range wholeHeros {
+		if hero == excludeHero {
+			continue
+		}
 		if _, ok := partHeroMap[hero]; !ok {
 			resHeros = append(resHeros, hero)
 		}

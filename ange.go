@@ -59,12 +59,12 @@ func predictNextSingleHero(countryHeros []string, zhugong string, historyHeroLis
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].FirstHero)
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].SecondHero)
 	}
-	nocontainHeros := notContainHeros(countryHeros, historyHeros)
+	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
 	log.Printf("nocontainHeros: %s\n", spew.Sdump(nocontainHeros))
 	if len(nocontainHeros) == 1 {
 		return nocontainHeros[0]
 	}
-	predictFirst, _ := predictNextHerosByTwoRound(len(countryHeros), zhugong, historyHeroList, "")
+	predictFirst, _ := predictNextHerosByTwoRound(countryHeros, len(countryHeros), zhugong, historyHeroList, "")
 	return predictFirst
 }
 

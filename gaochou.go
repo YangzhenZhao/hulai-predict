@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"sort"
 	"strings"
@@ -51,16 +52,16 @@ func predictNextHeros(countryHeros []string, zhugong string, historyHeroList []H
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].FirstHero)
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].SecondHero)
 	}
-	nocontainHeros := notContainHeros(countryHeros, historyHeros)
+	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
 	log.Printf("nocontainHeros: %s\n", spew.Sdump(nocontainHeros))
 	if len(nocontainHeros) == 2 {
 		return nocontainHeros[0], nocontainHeros[1]
 	}
 	if len(nocontainHeros) == 1 {
-		predictFirst, _ := predictNextHerosByTwoRound(len(countryHeros), zhugong, historyHeroList, nocontainHeros[0])
+		predictFirst, _ := predictNextHerosByTwoRound(countryHeros, len(countryHeros), zhugong, historyHeroList, nocontainHeros[0])
 		return predictFirst, nocontainHeros[0]
 	}
-	return predictNextHerosByTwoRound(len(countryHeros), zhugong, historyHeroList, "")
+	return predictNextHerosByTwoRound(countryHeros, len(countryHeros), zhugong, historyHeroList, "")
 }
 
 type heroHistoryMetric struct {
@@ -86,7 +87,7 @@ func (s Metrics) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-func predictNextHerosByTwoRound(countryHerosLen int, zhugong string, historyHeroList []HeroList, excludeHero string) (string, string) {
+func predictNextHerosByTwoRound(countryHeros []string, countryHerosLen int, zhugong string, historyHeroList []HeroList, excludeHero string) (string, string) {
 	metricMap := map[string]heroHistoryMetric{}
 	for i := 0; i < countryHerosLen-1; i++ {
 		heroList := historyHeroList[len(historyHeroList)-countryHerosLen+i+1]
@@ -114,10 +115,20 @@ func predictNextHerosByTwoRound(countryHerosLen int, zhugong string, historyHero
 		}
 	}
 	var metricList []heroHistoryMetric
+	var historyHeros []string
 	for _, value := range metricMap {
+		historyHeros = append(historyHeros, value.Hero)
 		metricList = append(metricList, value)
 	}
+	nocontainHeros := notContainHeros(countryHeros, historyHeros, excludeHero)
+	fmt.Printf("[predictNextHerosByTwoRound] %v\n", nocontainHeros)
+	if len(nocontainHeros) >= 2 {
+		return nocontainHeros[0], nocontainHeros[1]
+	}
 	sort.Sort(Metrics(metricList))
+	if len(nocontainHeros) == 1 && nocontainHeros[0] != metricList[0].Hero {
+		return nocontainHeros[0], metricList[0].Hero
+	}
 	// log.Printf("metricList: %s\n", spew.Sdump(metricList))
 	return metricList[0].Hero, metricList[1].Hero
 }
