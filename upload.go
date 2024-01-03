@@ -100,7 +100,7 @@ func formatContent(content string) string {
 func getCountryHerosByContent(content string, country string) []string {
 	var res []string
 	var idxList []int
-	for _, hero := range countryHerosMap[country] {
+	for _, hero := range countryHerosMapWithZhugong[country] {
 		if index := strings.Index(content, hero); index != -1 {
 			res = append(res, hero)
 			idxList = append(idxList, index)
