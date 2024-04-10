@@ -68,10 +68,10 @@ func uploadAnge(c *gin.Context) {
 	}
 	weiHisoty := storage.GetAngeHistory("wei")
 	lastDate := weiHisoty[len(weiHisoty)-1].Date
-	if !validteDate(lastDate) {
-		c.JSON(400, "当前不可更新暗格")
-		return
-	}
+	// if !validteDate(lastDate) {
+	// 	c.JSON(400, "当前不可更新暗格")
+	// 	return
+	// }
 	newDate := lastDate.Add(4 * 7 * 24 * time.Hour)
 	content := formatContent(req.Content)
 
