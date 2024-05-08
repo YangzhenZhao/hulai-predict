@@ -36,7 +36,7 @@ var zhugongMap = map[string]string{
 var lastAngeZhugongDateMap = map[string]time.Time{
 	"wei": newDate(2024, 1, 5),
 	"shu": newDate(2023, 11, 10),
-	"wu":  newDate(2023, 9, 15),
+	"wu":  newDate(2024, 4, 26),
 	"qun": newDate(2024, 3, 1),
 }
 
