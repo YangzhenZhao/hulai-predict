@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"sort"
 	"strings"
 	"time"
 
 	"github.com/YangzhenZhao/hulai-predict/dto"
 	"github.com/YangzhenZhao/hulai-predict/storage"
-	"github.com/davecgh/go-spew/spew"
 )
 
 func genGaochouList(country string) []guaranteedHeros {
@@ -53,7 +50,6 @@ func predictNextHeros(countryHeros []string, zhugong string, historyHeroList []H
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].SecondHero)
 	}
 	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
-	log.Printf("nocontainHeros: %s\n", spew.Sdump(nocontainHeros))
 	if len(nocontainHeros) == 2 {
 		return nocontainHeros[0], nocontainHeros[1]
 	}
@@ -121,7 +117,6 @@ func predictNextHerosByTwoRound(countryHeros []string, countryHerosLen int, zhug
 		metricList = append(metricList, value)
 	}
 	nocontainHeros := notContainHeros(countryHeros, historyHeros, excludeHero)
-	fmt.Printf("[predictNextHerosByTwoRound] %v\n", nocontainHeros)
 	if len(nocontainHeros) >= 2 {
 		return nocontainHeros[0], nocontainHeros[1]
 	}

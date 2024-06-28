@@ -7,13 +7,20 @@ import (
 	"github.com/YangzhenZhao/hulai-predict/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/unrolled/secure"
+	"github.com/gin-contrib/cors"
 )
 
 func main() {
 	storage.InitData()
 
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-
+	router.Use(cors.New(cors.Config{
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+		AllowMethods:     []string{"POST", "GET", "OPTIONS", "PUT", "DELETE", "UPDATE"},
+		AllowAllOrigins:  true,
+		AllowCredentials: true,
+	}))
 	router.GET("/", func(c *gin.Context) {
 		res := generateRes()
 		dumpsRes, _ := json.Marshal(res)

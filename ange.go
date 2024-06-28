@@ -1,13 +1,11 @@
 package main
 
 import (
-	"log"
 	"strings"
 	"time"
 
 	"github.com/YangzhenZhao/hulai-predict/dto"
 	"github.com/YangzhenZhao/hulai-predict/storage"
-	"github.com/davecgh/go-spew/spew"
 )
 
 func genAngeList(country string) []guaranteedHeros {
@@ -21,7 +19,6 @@ func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHe
 	var predictRes []angePredictHeros
 	currentDate := history[len(history)-1].Date
 	nextAngeZhugongDate := lastAngeZhugongDateMap[country].Add(8 * 4 * 7 * 24 * time.Hour)
-	log.Printf("nextAngeZhugongDate: %s", nextAngeZhugongDate.String())
 	var historyHeroList []HeroList
 	for _, item := range history {
 		historyHeroList = append(historyHeroList, HeroList{
@@ -60,7 +57,6 @@ func predictNextSingleHero(countryHeros []string, zhugong string, historyHeroLis
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].SecondHero)
 	}
 	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
-	log.Printf("nocontainHeros: %s\n", spew.Sdump(nocontainHeros))
 	if len(nocontainHeros) == 1 {
 		return nocontainHeros[0]
 	}
