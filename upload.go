@@ -104,6 +104,9 @@ func getCountryHerosByContent(content string, country string) []string {
 		if index := strings.Index(content, hero); index != -1 {
 			res = append(res, hero)
 			idxList = append(idxList, index)
+			if len(res) == 2 {
+				break
+			}
 		}
 	}
 	if len(res) != 2 {
