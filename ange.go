@@ -19,12 +19,9 @@ func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHe
 	var predictRes []angePredictHeros
 	currentDate := history[len(history)-1].Date
 	nextAngeZhugongDate := lastAngeZhugongDateMap[country].Add(8 * 4 * 7 * 24 * time.Hour)
-	var historyHeroList []HeroList
+	var historyHeroList [][]string
 	for _, item := range history {
-		historyHeroList = append(historyHeroList, HeroList{
-			FirstHero:  item.Heros[0],
-			SecondHero: item.Heros[1],
-		})
+		historyHeroList = append(historyHeroList, item.Heros)
 	}
 	for i := 0; i < 6; i++ {
 		currentDate = currentDate.Add(4 * 7 * 24 * time.Hour)
@@ -41,20 +38,20 @@ func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHe
 			SecondHero: secondHero,
 			Date:       currentDate,
 		})
-		historyHeroList = append(historyHeroList, HeroList{
-			FirstHero:  firstHero,
-			SecondHero: secondHero,
+		historyHeroList = append(historyHeroList, []string{
+			firstHero,
+			secondHero,
 		})
 	}
 	return predictRes
 
 }
 
-func predictNextSingleHero(countryHeros []string, zhugong string, historyHeroList []HeroList) string {
+func predictNextSingleHero(countryHeros []string, zhugong string, historyHeroList [][]string) string {
 	var historyHeros []string
 	for i := 0; i < (len(countryHeros)+1)/2-1; i++ {
-		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].FirstHero)
-		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].SecondHero)
+		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][0])
+		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][1])
 	}
 	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
 	if len(nocontainHeros) == 1 {

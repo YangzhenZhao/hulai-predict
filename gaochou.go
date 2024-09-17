@@ -19,11 +19,11 @@ func genPredictGaochouList(country string, history []dto.GaochouHeros) []gaochou
 	countryHeros := countryHerosMap[country]
 	var predictRes []gaochouPredictHeros
 	currentDate := history[len(history)-1].Date
-	var historyHeroList []HeroList
+	var historyHeroList [][]string
 	for _, item := range history {
-		historyHeroList = append(historyHeroList, HeroList{
-			FirstHero:  item.FirstHero,
-			SecondHero: item.SecondHero,
+		historyHeroList = append(historyHeroList, []string{
+			item.FirstHero,
+			item.SecondHero,
 		})
 	}
 	for i := 0; i < 6; i++ {
@@ -34,20 +34,20 @@ func genPredictGaochouList(country string, history []dto.GaochouHeros) []gaochou
 			SecondHero: secondHero,
 			Date:       currentDate,
 		})
-		historyHeroList = append(historyHeroList, HeroList{
-			FirstHero:  firstHero,
-			SecondHero: secondHero,
+		historyHeroList = append(historyHeroList, []string{
+			firstHero,
+			secondHero,
 		})
 	}
 	return predictRes
 
 }
 
-func predictNextHeros(countryHeros []string, zhugong string, historyHeroList []HeroList) (string, string) {
+func predictNextHeros(countryHeros []string, zhugong string, historyHeroList [][]string) (string, string) {
 	var historyHeros []string
 	for i := 0; i < (len(countryHeros)+1)/2-1; i++ {
-		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].FirstHero)
-		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i].SecondHero)
+		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][0])
+		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][1])
 	}
 	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
 	if len(nocontainHeros) == 2 {
@@ -83,28 +83,28 @@ func (s Metrics) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-func predictNextHerosByTwoRound(countryHeros []string, countryHerosLen int, zhugong string, historyHeroList []HeroList, excludeHero string) (string, string) {
+func predictNextHerosByTwoRound(countryHeros []string, countryHerosLen int, zhugong string, historyHeroList [][]string, excludeHero string) (string, string) {
 	metricMap := map[string]heroHistoryMetric{}
 	for i := 0; i < countryHerosLen-1; i++ {
 		heroList := historyHeroList[len(historyHeroList)-countryHerosLen+i+1]
-		if heroList.FirstHero != excludeHero && heroList.FirstHero != zhugong {
+		if heroList[0] != excludeHero && heroList[0] != zhugong {
 			count := 1
-			if existMetric, ok := metricMap[heroList.FirstHero]; ok {
+			if existMetric, ok := metricMap[heroList[0]]; ok {
 				count = existMetric.Count + 1
 			}
-			metricMap[heroList.FirstHero] = heroHistoryMetric{
-				Hero:        heroList.FirstHero,
+			metricMap[heroList[0]] = heroHistoryMetric{
+				Hero:        heroList[0],
 				Count:       count,
 				LastPostion: i * 2,
 			}
 		}
-		if heroList.SecondHero != excludeHero && heroList.SecondHero != zhugong {
+		if heroList[1] != excludeHero && heroList[1] != zhugong {
 			count := 1
-			if existMetric, ok := metricMap[heroList.SecondHero]; ok {
+			if existMetric, ok := metricMap[heroList[1]]; ok {
 				count = existMetric.Count + 1
 			}
-			metricMap[heroList.SecondHero] = heroHistoryMetric{
-				Hero:        heroList.SecondHero,
+			metricMap[heroList[1]] = heroHistoryMetric{
+				Hero:        heroList[1],
 				Count:       count,
 				LastPostion: i*2 + 1,
 			}

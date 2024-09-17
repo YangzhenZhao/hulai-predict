@@ -4,11 +4,6 @@ import (
 	"time"
 )
 
-type HeroList struct {
-	FirstHero  string
-	SecondHero string
-}
-
 type gaochouPredictHeros struct {
 	FirstHero  string
 	SecondHero string

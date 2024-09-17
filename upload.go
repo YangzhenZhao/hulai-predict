@@ -48,7 +48,7 @@ func uploadGaochou(c *gin.Context) {
 	shuList := getCountryHerosByContent(content, "shu")
 	wuList := getCountryHerosByContent(content, "wu")
 	qunList := getCountryHerosByContent(content, "qun")
-	if len(weiList) != 2 || len(shuList) != 2 || len(wuList) != 2 || len(qunList) != 2 {
+	if len(weiList) != BaodiHeroCnt || len(shuList) != BaodiHeroCnt || len(wuList) != BaodiHeroCnt || len(qunList) != BaodiHeroCnt {
 		c.JSON(400, "解析失败!")
 		return
 	}
