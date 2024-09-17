@@ -22,8 +22,8 @@ func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHe
 	var historyHeroList []HeroList
 	for _, item := range history {
 		historyHeroList = append(historyHeroList, HeroList{
-			FirstHero:  item.FirstHero,
-			SecondHero: item.SecondHero,
+			FirstHero:  item.Heros[0],
+			SecondHero: item.Heros[1],
 		})
 	}
 	for i := 0; i < 6; i++ {
@@ -76,7 +76,7 @@ func combineAngeGuaranteed(history []dto.AngeHeros, predict []angePredictHeros) 
 	}
 	for i := len(history) - 1; i >= len(history)-6; i-- {
 		res = append(res, guaranteedHeros{
-			Data:      strings.Join([]string{history[i].FirstHero, history[i].SecondHero}, " "),
+			Data:      strings.Join([]string{history[i].Heros[0], history[i].Heros[1]}, " "),
 			Date:      dateStr(history[i].Date),
 			IsPredict: false,
 			Type:      "暗格",

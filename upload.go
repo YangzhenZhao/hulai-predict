@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"sort"
 	"strings"
 	"time"
 
@@ -13,6 +14,8 @@ import (
 )
 
 var tmpPassword = "cai"
+
+const BaodiHeroCnt = 3
 
 func unmarshalRequest(c *gin.Context, v any) error {
 	if c == nil || c.Request == nil {
@@ -79,7 +82,7 @@ func uploadAnge(c *gin.Context) {
 	shuList := getCountryHerosByContent(content, "shu")
 	wuList := getCountryHerosByContent(content, "wu")
 	qunList := getCountryHerosByContent(content, "qun")
-	if len(weiList) != 2 || len(shuList) != 2 || len(wuList) != 2 || len(qunList) != 2 {
+	if len(weiList) != BaodiHeroCnt || len(shuList) != BaodiHeroCnt || len(wuList) != BaodiHeroCnt || len(qunList) != BaodiHeroCnt {
 		c.JSON(400, "解析失败!")
 		return
 	}
@@ -104,16 +107,17 @@ func getCountryHerosByContent(content string, country string) []string {
 		if index := strings.Index(content, hero); index != -1 {
 			res = append(res, hero)
 			idxList = append(idxList, index)
-			if len(res) == 2 {
+			if len(res) == BaodiHeroCnt {
 				break
 			}
 		}
 	}
-	if len(res) != 2 {
+	if len(res) != BaodiHeroCnt {
 		return nil
 	}
-	if idxList[0] < idxList[1] {
-		return res
-	}
-	return []string{res[1], res[0]}
+
+	sort.Slice(res, func(i, j int) bool {
+		return idxList[i] < idxList[j]
+	})
+	return res
 }

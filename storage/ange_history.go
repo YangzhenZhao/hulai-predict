@@ -32,24 +32,20 @@ func getAllAngeHistory() map[string][]dto.AngeHeros {
 func AppendNewAngeHisotryRecord(req dto.AppendNewAngeHisotryRecordReq) {
 	allHistory := getAllAngeHistory()
 	allHistory["wei"] = append(allHistory["wei"], dto.AngeHeros{
-		Date:       req.Date,
-		FirstHero:  req.WeiList[0],
-		SecondHero: req.WeiList[1],
+		Date:  req.Date,
+		Heros: req.WeiList,
 	})
 	allHistory["shu"] = append(allHistory["shu"], dto.AngeHeros{
-		Date:       req.Date,
-		FirstHero:  req.ShuList[0],
-		SecondHero: req.ShuList[1],
+		Date:  req.Date,
+		Heros: req.ShuList,
 	})
 	allHistory["wu"] = append(allHistory["wu"], dto.AngeHeros{
-		Date:       req.Date,
-		FirstHero:  req.WuList[0],
-		SecondHero: req.WuList[1],
+		Date:  req.Date,
+		Heros: req.WuList,
 	})
 	allHistory["qun"] = append(allHistory["qun"], dto.AngeHeros{
-		Date:       req.Date,
-		FirstHero:  req.QunList[0],
-		SecondHero: req.QunList[1],
+		Date:  req.Date,
+		Heros: req.QunList,
 	})
 	angeHistoryCacheMap.Store(angeHistoryKey, allHistory)
 	angeCSVAppendRecord(req)
@@ -93,16 +89,16 @@ func initAngeHistoryMap() {
 		wuHeroList := strings.Split(record[5], " ")
 		qunHeroList := strings.Split(record[6], " ")
 		angeHistoryMap["wei"] = append(angeHistoryMap["wei"], dto.AngeHeros{
-			Date: date, FirstHero: weiHeroList[0], SecondHero: weiHeroList[1],
+			Date: date, Heros: weiHeroList,
 		})
 		angeHistoryMap["shu"] = append(angeHistoryMap["shu"], dto.AngeHeros{
-			Date: date, FirstHero: shuHeroList[0], SecondHero: shuHeroList[1],
+			Date: date, Heros: shuHeroList,
 		})
 		angeHistoryMap["wu"] = append(angeHistoryMap["wu"], dto.AngeHeros{
-			Date: date, FirstHero: wuHeroList[0], SecondHero: wuHeroList[1],
+			Date: date, Heros: wuHeroList,
 		})
 		angeHistoryMap["qun"] = append(angeHistoryMap["qun"], dto.AngeHeros{
-			Date: date, FirstHero: qunHeroList[0], SecondHero: qunHeroList[1],
+			Date: date, Heros: qunHeroList,
 		})
 	}
 	angeHistoryCacheMap.Store(angeHistoryKey, angeHistoryMap)

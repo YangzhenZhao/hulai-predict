@@ -12,12 +12,14 @@ type HeroList struct {
 type gaochouPredictHeros struct {
 	FirstHero  string
 	SecondHero string
+	ThirdHero  string
 	Date       time.Time
 }
 
 type angePredictHeros struct {
 	FirstHero  string
 	SecondHero string
+	ThirdHero  string
 	Date       time.Time
 }
 
