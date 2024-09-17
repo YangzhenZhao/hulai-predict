@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 func generateRes() [][]guaranteedHeros {
 	return [][]guaranteedHeros{
@@ -18,14 +21,14 @@ func genSingleCountryRes(country string) []guaranteedHeros {
 	return res
 }
 
-func notContainHeros(wholeHeros, partHeros []string, excludeHero string) []string {
+func notContainHeros(wholeHeros, partHeros []string, excludeHeros []string) []string {
 	partHeroMap := map[string]struct{}{}
 	for _, hero := range partHeros {
 		partHeroMap[hero] = struct{}{}
 	}
 	var resHeros []string
 	for _, hero := range wholeHeros {
-		if hero == excludeHero {
+		if slices.Contains(excludeHeros, hero) {
 			continue
 		}
 		if _, ok := partHeroMap[hero]; !ok {

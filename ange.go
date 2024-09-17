@@ -1,6 +1,8 @@
 package main
 
 import (
+	"slices"
+	"sort"
 	"strings"
 	"time"
 
@@ -25,47 +27,89 @@ func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHe
 	}
 	for i := 0; i < 6; i++ {
 		currentDate = currentDate.Add(4 * 7 * 24 * time.Hour)
-		var firstHero string
-		var secondHero string
+		var heros []string
 		if currentDate.Equal(nextAngeZhugongDate) {
-			firstHero = zhugongMap[country]
-			secondHero = predictNextSingleHero(countryHeros, zhugongMap[country], historyHeroList)
-		} else {
-			firstHero, secondHero = predictNextHeros(countryHeros, zhugongMap[country], historyHeroList)
+			heros = append(heros, zhugongMap[country])
 		}
+		heros = append(
+			heros,
+			predictNextAngeHeros(
+				countryHeros, zhugongMap[country], historyHeroList, heros, BaodiHeroCnt-len(heros),
+			)...)
 		predictRes = append(predictRes, angePredictHeros{
-			FirstHero:  firstHero,
-			SecondHero: secondHero,
-			Date:       currentDate,
+			Heros: heros,
+			Date:  currentDate,
 		})
-		historyHeroList = append(historyHeroList, []string{
-			firstHero,
-			secondHero,
-		})
+		historyHeroList = append(historyHeroList, heros)
 	}
 	return predictRes
-
 }
 
-func predictNextSingleHero(countryHeros []string, zhugong string, historyHeroList [][]string) string {
+func predictNextAngeHeros(countryHeros []string, zhugong string, historyHeroList [][]string, excludeHeros []string, leaveCnt int) []string {
+	oneRoundRes := predictNextHerosByOneRound(countryHeros, zhugong, historyHeroList, excludeHeros)
+	if len(oneRoundRes) == leaveCnt {
+		return oneRoundRes
+	}
+	var res []string
+	if len(oneRoundRes) < leaveCnt {
+		res = append(res, oneRoundRes...)
+	}
+	return append(res, predictAngeNextHerosByTwoRound(countryHeros, zhugong, historyHeroList, res, BaodiHeroCnt-len(res))...)
+}
+
+func predictNextHerosByOneRound(countryHeros []string, zhugong string, historyHeroList [][]string, excludeHeros []string) []string {
 	var historyHeros []string
-	for i := 0; i < (len(countryHeros)+1)/2-1; i++ {
-		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][0])
-		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][1])
+	historyHeros = append(historyHeros, excludeHeros...)
+	for i := len(historyHeroList) - 1; i >= 0; i-- {
+		if len(historyHeros)+len(historyHeroList[i]) >= len(countryHeros) {
+			break
+		}
+		historyHeros = append(historyHeros, historyHeroList[i]...)
 	}
-	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
-	if len(nocontainHeros) == 1 {
-		return nocontainHeros[0]
+	nocontainHeros := notContainHeros(countryHeros, historyHeros, excludeHeros)
+	return nocontainHeros
+}
+
+func predictAngeNextHerosByTwoRound(countryHeros []string, zhugong string, historyHeroList [][]string, excludeHeros []string, leaveCnt int) []string {
+	metricMap := map[string]heroHistoryMetric{}
+	for _, hero := range countryHeros {
+		metricMap[hero] = heroHistoryMetric{Hero: hero}
 	}
-	predictFirst, _ := predictNextHerosByTwoRound(countryHeros, len(countryHeros), zhugong, historyHeroList, "")
-	return predictFirst
+	heroCnt := 0
+	for i := len(historyHeroList) - 1; i >= 0; i-- {
+		if heroCnt+len(historyHeroList[i]) >= 2*len(countryHeros) {
+			break
+		}
+		heroList := historyHeroList[i]
+		for j := 0; j < len(heroList); j++ {
+			metricMap[heroList[j]] = heroHistoryMetric{
+				Hero:        heroList[j],
+				Count:       metricMap[heroList[j]].Count + 1,
+				LastPostion: heroCnt + j,
+			}
+		}
+		heroCnt += len(heroList)
+	}
+	var metricList []heroHistoryMetric
+	for _, value := range metricMap {
+		if value.Hero == zhugong || slices.Contains(excludeHeros, value.Hero) {
+			continue
+		}
+		metricList = append(metricList, value)
+	}
+	sort.Sort(Metrics(metricList))
+	var res []string
+	for i := 0; i < leaveCnt; i++ {
+		res = append(res, metricList[i].Hero)
+	}
+	return res
 }
 
 func combineAngeGuaranteed(history []dto.AngeHeros, predict []angePredictHeros) []guaranteedHeros {
 	var res []guaranteedHeros
 	for i := len(predict) - 1; i >= 0; i-- {
 		res = append(res, guaranteedHeros{
-			Data:      strings.Join([]string{predict[i].FirstHero, predict[i].SecondHero}, " "),
+			Data:      strings.Join(predict[i].Heros, " "),
 			Date:      dateStr(predict[i].Date),
 			IsPredict: true,
 			Type:      "暗格",

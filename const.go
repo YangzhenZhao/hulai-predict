@@ -12,10 +12,8 @@ type gaochouPredictHeros struct {
 }
 
 type angePredictHeros struct {
-	FirstHero  string
-	SecondHero string
-	ThirdHero  string
-	Date       time.Time
+	Heros []string
+	Date  time.Time
 }
 
 func newDate(year int, month time.Month, day int) time.Time {

@@ -49,7 +49,7 @@ func predictNextHeros(countryHeros []string, zhugong string, historyHeroList [][
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][0])
 		historyHeros = append(historyHeros, historyHeroList[len(historyHeroList)-1-i][1])
 	}
-	nocontainHeros := notContainHeros(countryHeros, historyHeros, "")
+	nocontainHeros := notContainHeros(countryHeros, historyHeros, nil)
 	if len(nocontainHeros) == 2 {
 		return nocontainHeros[0], nocontainHeros[1]
 	}
@@ -74,7 +74,7 @@ func (s Metrics) Len() int {
 
 func (s Metrics) Less(i, j int) bool {
 	if s[i].Count == s[j].Count {
-		return s[i].LastPostion < s[j].LastPostion
+		return s[i].LastPostion > s[j].LastPostion
 	}
 	return s[i].Count < s[j].Count
 }
@@ -116,7 +116,7 @@ func predictNextHerosByTwoRound(countryHeros []string, countryHerosLen int, zhug
 		historyHeros = append(historyHeros, value.Hero)
 		metricList = append(metricList, value)
 	}
-	nocontainHeros := notContainHeros(countryHeros, historyHeros, excludeHero)
+	nocontainHeros := notContainHeros(countryHeros, historyHeros, []string{excludeHero})
 	if len(nocontainHeros) >= 2 {
 		return nocontainHeros[0], nocontainHeros[1]
 	}
