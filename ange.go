@@ -117,7 +117,7 @@ func combineAngeGuaranteed(history []dto.AngeHeros, predict []angePredictHeros) 
 	}
 	for i := len(history) - 1; i >= len(history)-6; i-- {
 		res = append(res, guaranteedHeros{
-			Data:      strings.Join([]string{history[i].Heros[0], history[i].Heros[1]}, " "),
+			Data:      strings.Join(history[i].Heros, " "),
 			Date:      dateStr(history[i].Date),
 			IsPredict: false,
 			Type:      "暗格",
