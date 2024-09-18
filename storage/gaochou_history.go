@@ -27,24 +27,20 @@ func getAllGaochouHistory() map[string][]dto.GaochouHeros {
 func AppendNewGaochouHisotryRecord(req dto.AppendNewGaochouHisotryRecordReq) {
 	allHistory := getAllGaochouHistory()
 	allHistory["wei"] = append(allHistory["wei"], dto.GaochouHeros{
-		Date:       req.Date,
-		FirstHero:  req.WeiList[0],
-		SecondHero: req.WeiList[1],
+		Date:  req.Date,
+		Heros: req.WeiList,
 	})
 	allHistory["shu"] = append(allHistory["shu"], dto.GaochouHeros{
-		Date:       req.Date,
-		FirstHero:  req.ShuList[0],
-		SecondHero: req.ShuList[1],
+		Date:  req.Date,
+		Heros: req.ShuList,
 	})
 	allHistory["wu"] = append(allHistory["wu"], dto.GaochouHeros{
-		Date:       req.Date,
-		FirstHero:  req.WuList[0],
-		SecondHero: req.WuList[1],
+		Date:  req.Date,
+		Heros: req.WuList,
 	})
 	allHistory["qun"] = append(allHistory["qun"], dto.GaochouHeros{
-		Date:       req.Date,
-		FirstHero:  req.QunList[0],
-		SecondHero: req.QunList[1],
+		Date:  req.Date,
+		Heros: req.QunList,
 	})
 	gaochouHistoryCacheMap.Store(gaoChouHistoryKey, allHistory)
 	gaochouCSVAppendRecord(req)
@@ -86,16 +82,16 @@ func initGaochouHisotyMap() {
 		wuHeroList := strings.Split(record[5], " ")
 		qunHeroList := strings.Split(record[6], " ")
 		gaoChouHistoryMap["wei"] = append(gaoChouHistoryMap["wei"], dto.GaochouHeros{
-			Date: date, FirstHero: weiHeroList[0], SecondHero: weiHeroList[1],
+			Date: date, Heros: weiHeroList,
 		})
 		gaoChouHistoryMap["shu"] = append(gaoChouHistoryMap["shu"], dto.GaochouHeros{
-			Date: date, FirstHero: shuHeroList[0], SecondHero: shuHeroList[1],
+			Date: date, Heros: shuHeroList,
 		})
 		gaoChouHistoryMap["wu"] = append(gaoChouHistoryMap["wu"], dto.GaochouHeros{
-			Date: date, FirstHero: wuHeroList[0], SecondHero: wuHeroList[1],
+			Date: date, Heros: wuHeroList,
 		})
 		gaoChouHistoryMap["qun"] = append(gaoChouHistoryMap["qun"], dto.GaochouHeros{
-			Date: date, FirstHero: qunHeroList[0], SecondHero: qunHeroList[1],
+			Date: date, Heros: qunHeroList,
 		})
 	}
 	gaochouHistoryCacheMap.Store(gaoChouHistoryKey, gaoChouHistoryMap)

@@ -34,7 +34,7 @@ func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHe
 		heros = append(
 			heros,
 			predictNextAngeHeros(
-				countryHeros, zhugongMap[country], historyHeroList, heros, BaodiHeroCnt-len(heros),
+				countryHeros, zhugongMap[country], historyHeroList, heros, BaodiHeroCnt-len(heros), "暗格",
 			)...)
 		predictRes = append(predictRes, angePredictHeros{
 			Heros: heros,
@@ -45,7 +45,7 @@ func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHe
 	return predictRes
 }
 
-func predictNextAngeHeros(countryHeros []string, zhugong string, historyHeroList [][]string, excludeHeros []string, leaveCnt int) []string {
+func predictNextAngeHeros(countryHeros []string, zhugong string, historyHeroList [][]string, excludeHeros []string, leaveCnt int, predictType string) []string {
 	oneRoundRes := predictNextHerosByOneRound(countryHeros, zhugong, historyHeroList, excludeHeros)
 	if len(oneRoundRes) == leaveCnt {
 		return oneRoundRes
@@ -66,7 +66,7 @@ func predictNextHerosByOneRound(countryHeros []string, zhugong string, historyHe
 		}
 		historyHeros = append(historyHeros, historyHeroList[i]...)
 	}
-	nocontainHeros := notContainHeros(countryHeros, historyHeros, excludeHeros)
+	nocontainHeros := notContainHeros(countryHeros, historyHeros, append(excludeHeros, zhugong))
 	return nocontainHeros
 }
 
