@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/YangzhenZhao/hulai-predict/storage"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/unrolled/secure"
-	"github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -29,8 +29,8 @@ func main() {
 	router.POST("/upload-gaochou", uploadGaochou)
 	router.POST("/upload-ange", uploadAnge)
 
-	router.Use(TlsHandler(8000))
-	router.RunTLS(":8000", "./public.pem", "./private.key")
+	// router.Use(TlsHandler(8000))
+	router.Run(":8000")
 }
 
 func TlsHandler(port int) gin.HandlerFunc {
