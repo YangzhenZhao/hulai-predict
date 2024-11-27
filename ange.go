@@ -54,7 +54,7 @@ func predictNextAngeHeros(countryHeros []string, zhugong string, historyHeroList
 	if len(oneRoundRes) < leaveCnt {
 		res = append(res, oneRoundRes...)
 	}
-	return append(res, predictAngeNextHerosByTwoRound(countryHeros, zhugong, historyHeroList, res, BaodiHeroCnt-len(res))...)
+	return append(res, predictAngeNextHerosByTwoRound(countryHeros, zhugong, historyHeroList, res, leaveCnt-len(res))...)
 }
 
 func predictNextHerosByOneRound(countryHeros []string, zhugong string, historyHeroList [][]string, excludeHeros []string) []string {
