@@ -16,11 +16,22 @@ func genAngeList(country string) []guaranteedHeros {
 	return combineAngeGuaranteed(history, predictHeros)
 }
 
+func getNextAngeZhugongDate(lastHistoryDate time.Time, country string) time.Time {
+	newDate := lastAngeZhugongDateMap[country].Add(8 * 4 * 7 * 24 * time.Hour)
+	for {
+		if newDate.After(lastHistoryDate) {
+			break
+		}
+		newDate = newDate.Add(8 * 4 * 7 * 24 * time.Hour)
+	}
+	return newDate
+}
+
 func genPredictAngeList(country string, history []dto.AngeHeros) []angePredictHeros {
 	countryHeros := countryHerosMap[country]
 	var predictRes []angePredictHeros
 	currentDate := history[len(history)-1].Date
-	nextAngeZhugongDate := lastAngeZhugongDateMap[country].Add(8 * 4 * 7 * 24 * time.Hour)
+	nextAngeZhugongDate := getNextAngeZhugongDate(currentDate, country)
 	var historyHeroList [][]string
 	for _, item := range history {
 		historyHeroList = append(historyHeroList, item.Heros)
